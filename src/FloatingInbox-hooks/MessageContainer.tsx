@@ -27,7 +27,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({
 
   const styles = {
     messagesContainer: {
-      display: "flex",
+      display: "block",
       justifyContent: "space-between",
       height: "100%",
       fontSize: isPWA == true ? "1.2em" : ".9em", // Increased font size
@@ -38,7 +38,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({
       margin: "0px",
       alignItems: "flex-start",
       flexGrow: 1,
-      display: "flex",
+      display: "block",
     },
   };
    const onMessage =  useCallback(
@@ -81,6 +81,12 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({
         <small className="loading">Loading messages...</small>
       ) : (
         <>
+          <MessageInput
+            isPWA={isPWA}
+            onSendMessage={(msg:any) => {
+              handleSendMessage(msg);
+            }}
+          />
           <ul style={styles.messagesList}>
             {messages.slice().map((message:any) => {
               return (
@@ -95,12 +101,7 @@ export const MessageContainer: React.FC<MessageContainerProps> = ({
             })}
             <div ref={messagesEndRef} />
           </ul>
-          <MessageInput
-            isPWA={isPWA}
-            onSendMessage={(msg:any) => {
-              handleSendMessage(msg);
-            }}
-          />
+          
         </>
       )}
     </div>

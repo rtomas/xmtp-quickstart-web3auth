@@ -5,6 +5,7 @@ import { ConversationContainer } from "./ConversationContainer";
 import { ApiClient, ClientOptions, NetworkOptions, XmtpEnv } from "@xmtp/xmtp-js";
 
 interface HomeProps {
+  address: string;
   wallet?: JsonRpcSigner | null; // Define a more specific type if possible, e.g., ethers.Wallet
   env: XmtpEnv;
   isPWA?: boolean;
@@ -12,7 +13,7 @@ interface HomeProps {
 }
 
 
-const Home: React.FC<HomeProps> = ({ wallet, env, isPWA = false, onLogout }) => {
+const Home: React.FC<HomeProps> = ({ address, wallet, env, isPWA = false, onLogout }) => {
   const initialIsOpen =
     isPWA || localStorage.getItem("isWidgetOpen") === "true" || false;
 
@@ -60,7 +61,7 @@ const Home: React.FC<HomeProps> = ({ wallet, env, isPWA = false, onLogout }) => 
       boxShadow: "0 0 10px rgba(0, 0, 0, 0.1)",
       zIndex: "1000",
       overflow: "hidden",
-      display: "flex",
+      
     },
     logoutBtn: {
       top: "10px",
@@ -137,20 +138,7 @@ const Home: React.FC<HomeProps> = ({ wallet, env, isPWA = false, onLogout }) => 
     }
   }, [wallet, signer, client]);
 
-  const connectWallet = async () => {
-    if (typeof window.ethereum !== 'undefined') {
-      try {
-        await window.ethereum.enable();
-        const provider = new ethers.BrowserProvider(window.ethereum);
-        setSigner(await provider.getSigner());
-        setIsConnected(true);
-      } catch (error) {
-        console.error("User rejected request", error);
-      }
-    } else {
-      console.error("Metamask not found");
-    }
-  };
+
 
   const getAddress = async (signer:JsonRpcSigner) : Promise<string | undefined> => {
     try {
@@ -220,11 +208,12 @@ const Home: React.FC<HomeProps> = ({ wallet, env, isPWA = false, onLogout }) => 
           style={styles.uContainer}
           className={"FloatingInbox" + (isOnNetwork ? "expanded" : "")}
         >
-          {isConnected && (
+          <div style={{ marginBottom: '40px',width:'100%' }}>my address: {address} {isConnected && (
             <button style={styles.logoutBtn} onClick={handleLogout}>
-              Logout
+              <b>Logout</b>
             </button>
-          )}
+          )}</div>
+          
           {isConnected && isOnNetwork && (
             <div style={styles.widgetHeader}>
               <div style={styles.conversationHeader}>
@@ -244,13 +233,6 @@ const Home: React.FC<HomeProps> = ({ wallet, env, isPWA = false, onLogout }) => 
           )}
           {isConnected}
           <div style={styles.widgetContent}>
-            {!isConnected && (
-              <div style={styles.xmtpContainer}>
-                <button style={styles.btnXmtp} onClick={connectWallet}>
-                  Connect Wallet
-                </button>
-              </div>
-            )}
             {isConnected && !isOnNetwork && (
               <div style={styles.xmtpContainer}>
                 <button style={styles.btnXmtp} onClick={initXmtpWithKeys}>

@@ -10,15 +10,16 @@ export const getEnv = () : XmtpEnv => {
     : "production" as XmtpEnv;
 };
 interface FloatingInboxProps {
+  address: string;
   isPWA?: boolean;
   wallet: JsonRpcSigner;
   onLogout: () => void;
 }
-export const FloatingInbox: React.FC<FloatingInboxProps> = ({ wallet, isPWA = false, onLogout }) => {
+export const FloatingInbox: React.FC<FloatingInboxProps> = ({ address, wallet, isPWA = false, onLogout }) => {
   //
   return (
     <XMTPProvider>
-      <Home isPWA={isPWA} env={getEnv()} wallet={wallet} onLogout={onLogout} />
+      <Home isPWA={isPWA} env={getEnv()} address={address} wallet={wallet} onLogout={onLogout} />
     </XMTPProvider>
   );
 }

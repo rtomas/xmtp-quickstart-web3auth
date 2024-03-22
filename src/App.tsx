@@ -19,6 +19,7 @@ function App() {
   const [web3auth, setWeb3auth] = useState<Web3Auth | null>(null);
   const [loggedIn, setLoggedIn] = useState(false);
   const [signer, setSigner] = useState<JsonRpcSigner | null>(null);
+  const [address, setAddress] = useState<string>("");
 
   useEffect(() => {
     const init = async () => {
@@ -44,6 +45,7 @@ function App() {
           const rpc = new RPC(web3auth.provider as IProvider);
           const sign = await rpc.getSigner()
           setSigner(sign);
+          setAddress(await sign.getAddress());
           console.log(sign);
         }
       } catch (error) {
@@ -93,7 +95,7 @@ function App() {
   const isPWA = true;
   const loggedInView = (
     <div>
-      {signer && <FloatingInbox isPWA={isPWA} wallet={signer!} onLogout={logout} ></FloatingInbox>}
+      {signer && <FloatingInbox isPWA={isPWA} address={address} wallet={signer!} onLogout={logout} ></FloatingInbox>}
       {!signer && <div>no signer! please, refresh.</div>}
     </div>
   );
@@ -108,16 +110,16 @@ function App() {
     <div className="container">
     <h1 className="title">
       <a target="_blank" href="https://web3auth.io/docs/sdk/pnp/web/modal" rel="noreferrer">
-        Web3Auth{" "} & ReactJS
-      </a>
-       XMTP Example
+        Web3Auth
+      </a> XMTP Example
+       
     </h1>
 
     <div className="grid">{loggedIn ? loggedInView : unloggedInView}</div>
 
-    <footer className="footer">
+    <footer className="footer" style={{"margin": '20px', "textAlign": 'center'}}>
       <a
-        href="https://github.com/Web3Auth/"
+        href="https://github.com/rtomas/xmtp-quickstart-web3auth"
         target="_blank"
         rel="noopener noreferrer"
       >
